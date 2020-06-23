@@ -42,13 +42,13 @@
     },
   };
 
-  const settings = {
+  /*const settings = {
     amountWidget: {
       defaultValue: 1,
       defaultMin: 1,
       defaultMax: 9,
     }
-  };
+  };*/
 
   const templates = {
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
@@ -60,7 +60,10 @@
       thisProduct.id = id;
       thisProduct.data = data;
       thisProduct.renderInMenu();
+      thisProduct.getElements()
       thisProduct.initAccordion();
+      thisProduct.initOrderForm();
+      thisProduct.processOrder();
       //console.log('new Product', thisProduct);
     }
 
@@ -76,12 +79,22 @@
       menuContainer.appendChild(thisProduct.element);
     }
 
+    getElements(){
+      const thisProduct = this;
+    
+      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
+      thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
+      thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
+      thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+    }
+
     initAccordion() {
       const thisProduct = this;
       /* find the clickable trigger (the element that should react to clicking) */
-      const clickableTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
       /* START: click event listener to trigger */
-      clickableTrigger.addEventListener('click', function() {
+      thisProduct.accordionTrigger.addEventListener('click', function() {
         /* prevent default action for event */
         event.preventDefault();
         /* toggle active class on element of thisProduct */
@@ -102,7 +115,46 @@
         /* END: click event listener to trigger */
       });
     }
-    
+
+    initOrderForm(){
+      const thisProduct = this;
+      console.log(this.initOrderForm);
+      thisProduct.form.addEventListener('submit', function(event){
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+      
+      for(let input of thisProduct.formInputs){
+        input.addEventListener('change', function(){
+          thisProduct.processOrder();
+        });
+      }
+      
+      thisProduct.cartButton.addEventListener('click', function(event){
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+    }
+
+    processOrder() {
+      const thisProduct = this;
+      const formData = utils.serializeFormToObject(thisProduct.form); // read all data from the form (using utils.serializeFormToObject) and save it to const formData
+      let price = thisProduct.data.price;// set variable price to equal thisProduct.data.price
+      for (let paramId in thisProduct.data.params) {// START LOOP: for each paramId in thisProduct.data.params 
+        const param = thisProduct.data.params[paramId];// save the element in thisProduct.data.params with keyparamId as const param 
+        for (let optionID in param.options) {// START LOOP: for each optionID  in param.options 
+          const option = param.options[optionID];// save the element in param.options with key optionId as const option
+          const optionSelected = formData.hasOwnProperty(paramId) && formData[paramId].indexOf(optionID) > -1;
+          if(optionSelected && !option.default) {// START IF: if option is selected and option is not default
+            price += option.price;// add price of option to variable price 
+          } else if (!optionSelected && !option.default) {// END IF: if option is selected and option is not default // START ELSE IF: if option is not selected and option is default 
+            price -= option.price;// deduct price of option from price
+          }
+        }// END LOOP: for each optionId in param.options
+      }// END LOOP: for each paramId in thisProduct.data.params
+      thisProduct.priceElem.innerHTML = thisProduct.price;// set content of thisProduct.priceElem to be the value of variable price 
+      thisProduct.priceElem.innerHTML = price;
+    }
   }
 
   const app = {
