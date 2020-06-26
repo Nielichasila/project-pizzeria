@@ -165,12 +165,15 @@
         } // END LOOP: for each optionId in param.options
       } // END LOOP: for each paramId in thisProduct.data.params
       thisProduct.priceElem.innerHTML = thisProduct.price; // set content of thisProduct.priceElem to be the value of variable price 
+      price *= thisProduct.amountWidget.value;
       thisProduct.priceElem.innerHTML = price;
     }
 
     initAmountWidget(){
       const thisProduct = this;
-
+      thisProduct.amountWidgetElem.addEventListener('updated', function(){
+        thisProduct.processOrder();
+    });
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
     }
   }
@@ -179,6 +182,7 @@
     constructor(element){
       const thisWidget = this;
       thisWidget.getElements(element);
+      thisWidget.value = settings.amountWidget.defaultValue;
       thisWidget.setValue(thisWidget.input.value);
       thisWidget.initActions();
       console.log('AmountWidget', AmountWidget);
@@ -200,9 +204,11 @@
       
       const newValue = parseInt(value); 
       /* TODO: Add validation */
-
-      thisWidget.value = newValue;
-   
+      if (newValue != thisWidget.value && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax){
+        thisWidget.value = newValue;
+        thisWidget.announce();
+      }
+      
       thisWidget.input.value = thisWidget.value;
     }
 
@@ -220,7 +226,12 @@
         thisWidget.setValue(thisWidget.value + 1);
       });
     }
- 
+    announce(){
+      const thisWidget = this;
+
+      const event = new Event('updated');
+      thisWidget.element.dispatchEvent(event);
+    }
   }
 
   const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
