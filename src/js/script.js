@@ -152,12 +152,12 @@
           const optionImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
           console.log('optionImages', optionImages);
           if (optionSelected) {
-            for(let optionImage of optionImages){
+            for (let optionImage of optionImages) {
+              optionImage.classList.add(classNames.menuProduct.imageVisible);
             }
-            optionImage.classList.add(classNames.menuProduct.imageVisible);
           } else {
-            for(let optionImage of optionImages) {
-            optionImage.classList.remove(classNames.menuProduct.imageVisible);
+            for (let optionImage of optionImages) {
+              optionImage.classList.remove(classNames.menuProduct.imageVisible);
             }
           }
         } // END LOOP: for each optionId in param.options
