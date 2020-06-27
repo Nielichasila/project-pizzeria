@@ -1,6 +1,10 @@
 /* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
 
-//const  { active } = require('browser-sync');
+/*const {
+  init
+} = require("browser-sync");
+
+//const  { active } = require('browser-sync');*/
 
 {
   'use strict';
@@ -55,7 +59,7 @@
     },
     // CODE ADDED END
   };
-  
+
   const classNames = {
     menuProduct: {
       wrapperActive: 'active',
@@ -67,7 +71,7 @@
     },
     // CODE ADDED END
   };
-  
+
   const settings = {
     amountWidget: {
       defaultValue: 1,
@@ -80,7 +84,7 @@
     },
     // CODE ADDED END
   };
-  
+
   const templates = {
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
     // CODE ADDED START
@@ -203,17 +207,17 @@
       thisProduct.priceElem.innerHTML = price;
     }
 
-    initAmountWidget(){
+    initAmountWidget() {
       const thisProduct = this;
-      thisProduct.amountWidgetElem.addEventListener('updated', function(){
+      thisProduct.amountWidgetElem.addEventListener('updated', function () {
         thisProduct.processOrder();
-    });
+      });
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
     }
   }
 
   class AmountWidget {
-    constructor(element){
+    constructor(element) {
       const thisWidget = this;
       thisWidget.getElements(element);
       thisWidget.value = settings.amountWidget.defaultValue;
@@ -223,56 +227,76 @@
       //console.log('constructor arguments:', element);
     }
 
-    getElements(element){
+    getElements(element) {
       const thisWidget = this;
-    
+
       thisWidget.element = element;
       thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
       thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
       thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
     }
 
-    setValue(value){
+    setValue(value) {
       const thisWidget = this;
       //console.log('thisWidget', thisWidget);
-      
-      const newValue = parseInt(value); 
+
+      const newValue = parseInt(value);
       /* TODO: Add validation */
-      if (newValue != thisWidget.value && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax){
+      if (newValue != thisWidget.value && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
         thisWidget.value = newValue;
         thisWidget.announce();
       }
-      
+
       thisWidget.input.value = thisWidget.value;
     }
 
-    initActions(){
+    initActions() {
       const thisWidget = this;
-      thisWidget.input.addEventListener('change', function(){
+      thisWidget.input.addEventListener('change', function () {
         thisWidget.setValue(thisWidget.input.value);
       });
-      thisWidget.linkDecrease.addEventListener('click', function(event){
+      thisWidget.linkDecrease.addEventListener('click', function (event) {
         event.preventDefault();
         thisWidget.setValue(thisWidget.value - 1);
       });
-      thisWidget.linkIncrease.addEventListener('click', function(event){
+      thisWidget.linkIncrease.addEventListener('click', function (event) {
         event.preventDefault();
         thisWidget.setValue(thisWidget.value + 1);
       });
     }
-    announce(){
+    announce() {
       const thisWidget = this;
 
       const event = new Event('updated');
       thisWidget.element.dispatchEvent(event);
     }
   }
+  class Cart {
+    constructor(element) {
+      const thisCart = this;
+      thisCart.products = [];
+      thisCart.getElements(element);
+      this.initActions();
+      console.log('new Cart', thisCart);
+    }
+    getElements(element) {
+      const thisCart = this;
+      thisCart.dom = {};
+      thisCart.dom.wrapper = element;
+      thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+    }
 
+    initActions(){
+      const thisCart = this;
+      thisCart.dom.toggleTrigger.addEventListener('click', function(event){
+        thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
+      });
+    }
+  }
   const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
     initMenu: function () {
       const thisApp = this;
       //console.log('thisApp.data:', thisApp.data);
-
       for (let productData in thisApp.data.products) { // ProductData to ID, i identyfikator
         new Product(productData, thisApp.data.products[productData]);
       }
@@ -284,7 +308,14 @@
       thisApp.data = dataSource;
     },
 
-    init: function () {
+    initCart: function () {
+      const thisApp = this;
+
+      const cartElem = document.querySelector(select.containerOf.cart);
+      thisApp.cart = new Cart(cartElem);
+    },
+
+    init: function() {
       const thisApp = this;
       //console.log('*** App starting ***');
       //console.log('thisApp:', thisApp);
@@ -293,6 +324,7 @@
       //console.log('templates:', templates);
       thisApp.initData();
       thisApp.initMenu();
+      thisApp.initCart();
     },
   };
 
