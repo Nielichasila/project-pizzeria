@@ -154,6 +154,12 @@
       });
     }
 
+    addToCart(){
+      const thisProduct = this;
+
+      app.cart.add(thisProduct);
+    }
+
     initOrderForm() {
       const thisProduct = this;
       //console.log(this.initOrderForm);
@@ -171,6 +177,7 @@
       thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
+        addToCart();
       });
     }
 
@@ -213,7 +220,7 @@
         thisProduct.processOrder();
       });
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
-    }
+    } 
   }
 
   class AmountWidget {
@@ -276,7 +283,7 @@
       const thisCart = this;
       thisCart.products = [];
       thisCart.getElements(element);
-      this.initActions();
+      thisCart.initActions();
       console.log('new Cart', thisCart);
     }
     getElements(element) {
@@ -288,9 +295,15 @@
 
     initActions(){
       const thisCart = this;
-      thisCart.dom.toggleTrigger.addEventListener('click', function(event){
+      thisCart.dom.toggleTrigger.addEventListener('click', function(){
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
+    }
+
+    add(menuProduct){
+      const thisCart = this;
+
+      console.log('adding product', menuProduct);
     }
   }
   const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
