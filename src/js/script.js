@@ -156,7 +156,8 @@
 
     addToCart(){
       const thisProduct = this;
-
+      thisProduct.name = thisProduct.data.name;
+      thisProduct.amount = thisProduct.amountWidget.value;
       app.cart.add(thisProduct);
     }
 
@@ -177,7 +178,7 @@
       thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
-        addToCart();
+        thisProduct.addToCart();
       });
     }
 
@@ -185,6 +186,7 @@
       const thisProduct = this;
       const formData = utils.serializeFormToObject(thisProduct.form); // read all data from the form (using utils.serializeFormToObject) and save it to const formData
       //console.log('formData', formData);
+      thisProduct.params = {};
       let price = thisProduct.data.price; // set variable price to equal thisProduct.data.price
       for (let paramId in thisProduct.data.params) { // START LOOP: for each paramId in thisProduct.data.params 
         const param = thisProduct.data.params[paramId]; // save the element in thisProduct.data.params with keyparamId as const param 
@@ -199,6 +201,13 @@
           const optionImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
           //console.log('optionImages', optionImages);
           if (optionSelected) {
+            if(!thisProduct.params[paramId]){
+              thisProduct.params[paramId] = {
+                label: param.label,
+                options: {},
+              };
+            }
+            thisProduct.params[paramId].options[optionId] = option.label;
             for (let optionImage of optionImages) {
               optionImage.classList.add(classNames.menuProduct.imageVisible);
             }
@@ -209,10 +218,14 @@
           }
         } // END LOOP: for each optionId in param.options
       } // END LOOP: for each paramId in thisProduct.data.params
-      thisProduct.priceElem.innerHTML = thisProduct.price; // set content of thisProduct.priceElem to be the value of variable price 
-      price *= thisProduct.amountWidget.value;
-      thisProduct.priceElem.innerHTML = price;
+      thisProduct.priceElem.innerHTML = thisProduct.price; // set content of thisProduct.priceElem to be the value of variable price      
+      thisProduct.priceSingle = price;/* multiply price by amount */
+      thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
+      thisProduct.priceElem.innerHTML = thisProduct.price;/* set the contents of thisProduct.priceElem to be the value of variable price */
+
+      console.log('thisProductparams', thisProduct.params);
     }
+    
 
     initAmountWidget() {
       const thisProduct = this;
@@ -291,6 +304,7 @@
       thisCart.dom = {};
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = document.querySelector(select.cart.productList);
     }
 
     initActions(){
@@ -302,7 +316,9 @@
 
     add(menuProduct){
       const thisCart = this;
-
+      const generatedHTML = templates.cartProduct(menuProduct);
+      const generatedDom = utils.createDOMFromHTML(generatedHTML);
+      thisCart.dom.productList.appendChild(generatedDom);
       console.log('adding product', menuProduct);
     }
   }
