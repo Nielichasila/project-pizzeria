@@ -83,6 +83,11 @@
       defaultDeliveryFee: 20,
     },
     // CODE ADDED END
+    db: {
+      url: '//localhost:3131',
+      product: 'product',
+      order: 'order',
+    },
   };
 
   const templates = {
@@ -310,7 +315,7 @@
       thisCart.dom.productList = document.querySelector(select.cart.productList);
       thisCart.renderTotalsKeys = ['totalNumber', 'totalPrice', 'subtotalPrice', 'deliveryFee'];
       for(let key of thisCart.renderTotalsKeys){
-      thisCart.dom[key] = thisCart.dom.wrapper.querySelectorAll(select.cart[key]);
+        thisCart.dom[key] = thisCart.dom.wrapper.querySelectorAll(select.cart[key]);
       }
     }
 
@@ -445,7 +450,23 @@
     initData: function () { // data = dataSource
       const thisApp = this;
 
-      thisApp.data = dataSource;
+      thisApp.data = {};
+      const url = settings.db.url + '/' + settings.db.product;
+
+      fetch(url)
+        .then(function(rawResponse){
+          return rawResponse.json();
+        })
+        .then(function(parsedResponse){
+          console.log('parsedResponse', parsedResponse);
+
+          /* save parsedResponse as thisApp.data.products */
+
+          /* execute initMenu method */
+
+        })
+      console.log('thisApp.data', JSON.stringify(thisApp.data));
+      
     },
 
     initCart: function () {
