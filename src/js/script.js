@@ -443,7 +443,7 @@
       const thisApp = this;
       //console.log('thisApp.data:', thisApp.data);
       for (let productData in thisApp.data.products) { // ProductData to ID, i identyfikator
-        new Product(productData, thisApp.data.products[productData]);
+        new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
       }
     },
 
@@ -461,9 +461,9 @@
           console.log('parsedResponse', parsedResponse);
 
           /* save parsedResponse as thisApp.data.products */
-
+          thisApp.data.products = parsedResponse;
           /* execute initMenu method */
-
+          thisApp.initMenu();
         })
       console.log('thisApp.data', JSON.stringify(thisApp.data));
       
@@ -484,7 +484,6 @@
       //console.log('settings:', settings);
       //console.log('templates:', templates);
       thisApp.initData();
-      thisApp.initMenu();
       thisApp.initCart();
     },
   };
