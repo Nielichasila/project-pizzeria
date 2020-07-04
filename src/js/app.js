@@ -1,6 +1,6 @@
 import {
   settings,
-  select
+  select,
 } from './setting.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
