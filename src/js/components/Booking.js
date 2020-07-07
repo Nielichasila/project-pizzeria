@@ -2,9 +2,7 @@ import {
   templates,
   select
 } from '../settings.js';
-import {
-  utils
-} from '../utils.js';
+import utils from '../utils.js';
 import AmountWidget from './AmountWidget.js';
 
 class Booking {

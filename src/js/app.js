@@ -7,6 +7,9 @@ import Product from './components/Product.js';
 import Cart from './components/Cart.js';
 import Booking from './components/Booking.js';
 
+/* eslint-disable no-unused-vars */ 
+
+
 const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
   initPages: function () {
     const thisApp = this;
