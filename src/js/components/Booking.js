@@ -4,7 +4,7 @@ import {
 } from '../settings.js';
 import utils from '../utils.js';
 import AmountWidget from './AmountWidget.js';
-import DatePicker from './DatePicker';
+import DatePicker from './DatePicker.js';
 
 class Booking {
   constructor(elemBooking) {
