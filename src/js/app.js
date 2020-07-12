@@ -44,7 +44,6 @@ const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
       });
     }
 
-
   },
   activatePage: function (pageId) {
     const thisApp = this;
@@ -96,7 +95,6 @@ const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
         thisApp.initMenu();
       });
     //console.log('thisApp.data', JSON.stringify(thisApp.data));
-
   },
 
   initCart: function () {
