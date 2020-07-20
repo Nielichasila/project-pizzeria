@@ -16,7 +16,9 @@ const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
 
     thisApp.pages = document.querySelector(select.containerOf.pages).children;
     thisApp.navLinks = document.querySelectorAll(select.nav.links);
-
+    thisApp.orderLink = document.querySelector(select.homeLinks.order);
+    thisApp.bookingLink = document.querySelector(select.homeLinks.booking);
+    
     const idFromHash = window.location.hash.replace('#/', '');
 
     let pageMatchingHash = thisApp.pages[0].id;
@@ -34,16 +36,26 @@ const app = { //obiekt który pomoże nam w organizacji kodu naszej aplikacji,
       link.addEventListener('click', function (event) {
         const clickedElement = this;
         event.preventDefault();
-
-        /* get page id from href attribute */
         const id = clickedElement.getAttribute('href').replace('#', '');
-        /* run thisApp.activatePage with that id */
         thisApp.activatePage(id);
-        /* change URL hash */
         window.location.hash = '#/' + id;
       });
     }
+    thisApp.orderLink.addEventListener('click', function (event) {
+      const orderId = 'order';
+      event.preventDefault();
 
+      thisApp.activatePage(orderId);
+      window.location.hash = '/' + orderId;
+    });
+    /* Booking */
+    thisApp.bookingLink.addEventListener('click', function (event) {
+      const bookingId = 'booking';
+      event.preventDefault();
+
+      thisApp.activatePage(bookingId);
+      window.location.hash = '/' + bookingId;
+    });
   },
   activatePage: function (pageId) {
     const thisApp = this;

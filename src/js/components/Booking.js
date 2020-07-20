@@ -24,7 +24,6 @@ class Booking {
       table.addEventListener('click', function(){
         table.classList.add(classNames.booking.tableBooked);
         let tableSelectedId = parseInt(table.getAttribute(settings.booking.tableIdAttribute));
-        console.log('tableSelected', tableSelectedId);
         thisBooking.tableSelected = tableSelectedId;
       });
     }

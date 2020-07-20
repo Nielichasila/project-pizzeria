@@ -73,6 +73,10 @@ export const select = {
   nav: {
     links: '.main-nav a',
   },
+  homeLinks: {
+    order: '.image-order',
+    booking: '.image-book',
+  }	
 };
 
 export const classNames = {
